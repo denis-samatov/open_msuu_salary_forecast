@@ -77,6 +77,7 @@ def extract_vacancy_info(vacancy_id: str) -> Dict[str, Any]:
     Dict[str, Any]: A dictionary with detailed vacancy information.
     """
     try:
+        print(API_HH_KEY)
         headers = {'Authorization': f'Bearer {API_HH_KEY}'}
         response = requests.get(f'{API_HH_VACANCIES}/{vacancy_id}', headers=headers)
         response.raise_for_status()
