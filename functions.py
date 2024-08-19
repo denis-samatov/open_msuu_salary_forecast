@@ -32,18 +32,6 @@ from gensim.models.doc2vec import Doc2Vec, TaggedDocument
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from tqdm.autonotebook import tqdm
 
-# Constants
-SEED = 42
-USD_TO_RUB = 90
-EUR_TO_RUB = 100
-API_HH_AREAS = r'https://api.hh.ru/areas'
-API_HH_PROFESSIONAL_ROLES = r'https://api.hh.ru/professional_roles'
-API_HH_VACANCIES = r'https://api.hh.ru/vacancies'
-API_HH_KEY = r'USERTRIUHRQ69NP4KCTPQ9JVC95CH68929FC4FG71IAA36IPUUKI6R0VHHMF83QB'
-EMPLOYER_ID = r'895945'
-
-
-
 
 # Setup logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
