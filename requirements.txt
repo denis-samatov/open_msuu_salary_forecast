@@ -15,3 +15,4 @@ wordcloud==1.9.3
 pydeck==0.9.1  
 umap-learn==0.5.6  
 pymorphy2==0.9.1
+psutil==6.0.0
