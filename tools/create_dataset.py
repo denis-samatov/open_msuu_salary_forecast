@@ -31,6 +31,7 @@ def download_nltk_data(resource):
 
 download_nltk_data('tokenizers/punkt')
 download_nltk_data('corpora/stopwords')
+download_nltk_data('corpora/wordnet')
 
 # Set random seed for reproducibility
 np.random.seed(SEED)
