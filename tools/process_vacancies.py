@@ -25,8 +25,8 @@ def convert_data_to_train(data_string: str) -> List[float]:
     """
     data_string = data_string.strip()[1:-1]  # Remove brackets
     data_list = re.split(r'\s+', data_string)  # Split by whitespace
-    data_list = [float(x.rstrip(',')) for x in data_list if x]  # Convert to floats
-    return data_list
+    
+    return [float(x.rstrip(',')) for x in data_list if x] # Convert to floats
 
 def vectorize_vacancy(vacancy_title: str, vacancy_details: str, doc2vec_model: Doc2Vec) -> np.ndarray:
     """
@@ -45,7 +45,6 @@ def vectorize_vacancy(vacancy_title: str, vacancy_details: str, doc2vec_model: D
 
     # Encode the preprocessed text with Doc2Vec
     preprocessed_vacancy_doc2vec = drop_punctuation_text(preprocessed_vacancy)
-    doc2vec_model.random.seed(SEED)
-    doc2vec_vector = doc2vec_model.infer_vector(preprocessed_vacancy_doc2vec.split()).reshape(1, -1)
+    doc2vec_vector = doc2vec_model.infer_vector(preprocessed_vacancy_doc2vec.split())
 
-    return doc2vec_vector
+    return doc2vec_vector.reshape(1, -1)

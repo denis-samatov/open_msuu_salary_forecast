@@ -1,39 +1,22 @@
 import streamlit as st
 import numpy as np
-import requests
 import logging
-import pandas as pd
 import plotly.graph_objects as go
 
 
-from gensim.models.doc2vec import Doc2Vec
-from typing import Dict, List, Tuple
-from tools.api_links_and_constant import API_HH_AREAS, API_HH_PROFESSIONAL_ROLES
-from tools.charts import plot_salary_distribution, plot_key_skills, plot_salary_boxplots, plot_professional_roles, plot_key_skills_wordcloud
-from tools.parser import fetch_and_process_vacancies
+
+from typing import Dict, List
+from tools.charts import plot_salary_distribution, plot_key_skills, plot_salary_boxplots, plot_professional_roles, plot_key_skills_wordcloud, plot_combined_salary
+from tools.parser import fetch_and_process_vacancies, get_areas, get_professional_roles
 from tools.create_dataset import create_dataset
 from tools.process_vacancies import vectorize_vacancy
 from tools.anomaly_detection import detect_anomalies
 from tools.salary_forecasting import OPTICS_UMAP_Clusterer, get_salary_stats
+from tools.save_statistics import create_zip_with_stats_and_plots, create_salary_statistics
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-# Function to fetch areas from the API
-def get_areas() -> Dict[str, int]:
-    response = requests.get(API_HH_AREAS)
-    response.raise_for_status()
-    areas_data = response.json()
-    areas = {area['name']: area['id'] for country in areas_data for area in country['areas']}
-    return areas
-
-# Function to fetch professional roles from the API
-def get_professional_roles() -> Dict[str, int]:
-    response = requests.get(API_HH_PROFESSIONAL_ROLES)
-    response.raise_for_status()
-    roles_data = response.json()
-    roles = {role['name']: role['id'] for category in roles_data['categories'] for role in category['roles']}
-    return roles
 
 def validate_salary(salary: str) -> bool:
     try:
@@ -82,6 +65,22 @@ def show_forecast_salary() -> None:
 
     # Button to fetch vacancies based on user inputs
     if st.sidebar.button("Получить вакансии"):
+        # Reset session state variables related to the vacancy processing
+        if 'df_vacancies' in st.session_state:
+            del st.session_state['df_vacancies']
+        if 'df_vacancies_hh' in st.session_state:
+            del st.session_state['df_vacancies_hh']
+        if 'doc2vec_model' in st.session_state:
+            del st.session_state['doc2vec_model']
+        if 'cleaned_df' in st.session_state:
+            del st.session_state['cleaned_df']
+        if 'doc2vec_vacancy_vector' in st.session_state:
+            del st.session_state['doc2vec_vacancy_vector']
+        if 'combined_salary_fig' in st.session_state:
+            del st.session_state['combined_salary_fig']
+        if 'vacancy_details' in st.session_state:
+            del st.session_state['vacancy_details']
+
         with st.spinner("Получение вакансий..."):
             df_vacancies = fetch_and_process_vacancies(search_params, pages=pages)
             st.success("Вакансии успешно получены.")
@@ -229,14 +228,11 @@ def show_forecast_salary() -> None:
             user_salary = st.session_state.vacancy_details['vacancy_salary']
             user_salary = float(user_salary) if user_salary else 0
 
-            # Вычисление ошибки (интервала)
-            # low_error = user_salary - low_salary_stats_doc2vec['median'] if user_salary > low_salary_stats_doc2vec['median'] else low_salary_stats_doc2vec['median'] - user_salary
-            # high_error = high_salary_stats_doc2vec['median'] - user_salary if user_salary < high_salary_stats_doc2vec['median'] else user_salary - high_salary_stats_doc2vec['median']
-
             # Проверка наличия значений медианы
             low_median = low_salary_stats_doc2vec.get('median', None)
             high_median = high_salary_stats_doc2vec.get('median', None)
 
+        
             st.header("Результаты")
             with st.expander("Показать/Скрыть результаты", expanded=True):
                 # Стиль для графиков
@@ -257,76 +253,28 @@ def show_forecast_salary() -> None:
                 st.markdown('<div class="plot-container">', unsafe_allow_html=True)
                 
                 # Объединенный график для низкой и высокой зарплаты
-                combined_salary_fig = go.Figure()
+                if 'combined_salary_fig' not in st.session_state:
+                    st.session_state.combined_salary_fig = go.Figure()
 
-                # Добавление линии, соединяющей медианные значения низкой и высокой зарплат
-                if not np.isnan(low_median) and not np.isnan(high_median) and low_median < high_median:
-                    combined_salary_fig.add_trace(go.Scatter(
-                        x=[low_median, high_median],
-                        y=['User Salary', 'User Salary'],
-                        mode='lines+markers',
-                        line=dict(color='blue'),
-                        marker=dict(symbol='line-ew', size=10, color='blue'),
-                        name='Median Salary Interval'
-                    ))
-                elif not np.isnan(low_median) and not np.isnan(high_median): 
-                    combined_salary_fig.add_trace(go.Scatter(
-                        x=[high_median, low_median],
-                        y=['User Salary', 'User Salary'],
-                        mode='lines+markers',
-                        line=dict(color='blue'),
-                        marker=dict(symbol='line-ew', size=10, color='blue'),
-                        name='Median Salary Interval'
-                    ))
-                elif np.isnan(low_median) and not np.isnan(high_median):
-                    combined_salary_fig.add_trace(go.Scatter(
-                        x=[0, high_median],
-                        y=['User Salary', 'User Salary'],
-                        mode='lines+markers',
-                        line=dict(color='blue'),
-                        marker=dict(symbol='line-ew', size=10, color='blue'),
-                        name='Median Salary Interval'
-                    ))
-                elif not np.isnan(low_median) and np.isnan(high_median):
-                    combined_salary_fig.add_trace(go.Scatter(
-                        x=[low_median, 300000],
-                        y=['User Salary', 'User Salary'],
-                        mode='lines+markers',
-                        line=dict(color='blue'),
-                        marker=dict(symbol='line-ew', size=10, color='blue'),
-                        name='Median Salary Interval'
-                    ))
-                elif low_median == high_median:
-                    combined_salary_fig.add_trace(go.Scatter(
-                        x=[low_median],
-                        y=['User Salary'],
-                        mode='markers+text',
-                        marker=dict(color='blue', size=12, symbol="circle"),
-                        text=["Median Salary"],
-                        textposition="top center",
-                        name="Median Salary"
-                    ))
+                combined_salary_fig = st.session_state.combined_salary_fig
 
-
-                # Добавление пользовательской зарплаты в виде точки
-                combined_salary_fig.add_trace(go.Scatter(
-                    x=[user_salary],
-                    y=['User Salary'],
-                    mode='markers+text',
-                    marker=dict(color='red', size=12, symbol="circle"),
-                    text=["User Salary"],
-                    textposition="top center",
-                    name="User Salary"
-                ))
-
-                combined_salary_fig.update_layout(
-                    title="Зарплата пользователя и интервал медианной зарплаты",
-                    xaxis_title="Зарплата",
-                    yaxis_title="Метрики",
-                    template="simple_white"
-                )
-
+                combined_salary_fig = plot_combined_salary(combined_salary_fig, low_median, high_median, user_salary)
+            
                 st.plotly_chart(combined_salary_fig, use_container_width=True)
 
-                st.markdown('</div>', unsafe_allow_html=True)
+                # Создание сводной таблицы
+                salary_statisrics_table = create_salary_statistics(low_salary_stats_doc2vec, high_salary_stats_doc2vec) 
 
+                other_figures = [fig_salary_dist, fig_key_skills, fig_key_skills_wordcloud, fig_salary_boxplot, fig_prof_roles]
+                # Генерация ZIP-архива для скачивания
+                zip_buffer = create_zip_with_stats_and_plots(salary_statisrics_table, combined_salary_fig, other_figures)
+
+                # Кнопка для скачивания ZIP-архива
+                st.download_button(
+                    label="Скачать статистику и графики",
+                    data=zip_buffer.getvalue(),
+                    file_name="salary_data.zip",
+                    mime="application/zip"
+                )
+
+                st.markdown('</div>', unsafe_allow_html=True)

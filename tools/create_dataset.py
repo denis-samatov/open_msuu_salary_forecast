@@ -6,12 +6,13 @@ import random
 import pandas as pd
 import os
 import nltk
+
+
 from nltk.corpus import stopwords
-from nltk.tokenize import word_tokenize, sent_tokenize
+from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
 from pymorphy2 import MorphAnalyzer
 from gensim.models.doc2vec import Doc2Vec, TaggedDocument
-from tqdm.auto import tqdm
 from typing import List, Tuple
 from joblib import Parallel, delayed
 from tools.api_links_and_constant import SEED
@@ -30,7 +31,6 @@ def download_nltk_data(resource):
 
 download_nltk_data('tokenizers/punkt')
 download_nltk_data('corpora/stopwords')
-download_nltk_data('corpora/wordnet')
 
 # Set random seed for reproducibility
 np.random.seed(SEED)
@@ -184,7 +184,7 @@ def create_dataset(dataset: pd.DataFrame) -> Tuple[pd.DataFrame, Doc2Vec]:
     # Generate Doc2Vec embeddings
     doc2vec_text = dataset['processed_combined_text'].apply(drop_punctuation_text)
     tagged_documents = [TaggedDocument(words=text.split(), tags=[str(i)]) for i, text in enumerate(doc2vec_text)]
-    doc2vec_model = Doc2Vec(vector_size=200, window=5, min_count=3, workers=4, epochs=40)
+    doc2vec_model = Doc2Vec(vector_size=200, window=5, min_count=3, workers=-1, epochs=40)
     doc2vec_model.random.seed(SEED)
     doc2vec_model.build_vocab(tagged_documents)
     doc2vec_model.train(tagged_documents, total_examples=doc2vec_model.corpus_count, epochs=doc2vec_model.epochs)
