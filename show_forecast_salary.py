@@ -74,9 +74,9 @@ def show_forecast_salary() -> None:
     #     cleaned_df, anomalies_df = detect_anomalies(st.session_state.df_vacancies_hh)
     #     st.session_state.cleaned_df = cleaned_df
 
-    # Display data analysis
-    st.header("Анализ данных")
-    with st.expander("Показать/Скрыть анализ данных", expanded=True):
+    # # Display data analysis
+    # st.header("Анализ данных")
+    # with st.expander("Показать/Скрыть анализ данных", expanded=True):
         # with st.container():
         #     col1, col2 = st.columns(2)
         #     with col1:
