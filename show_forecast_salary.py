@@ -192,8 +192,8 @@ def show_forecast_salary() -> None:
     # low_median = low_salary_stats_doc2vec.get('median', None)
     # high_median = high_salary_stats_doc2vec.get('median', None)
 
-    st.header("Результаты")
-    with st.expander("Показать/Скрыть результаты", expanded=True):
+    # st.header("Результаты")
+    # with st.expander("Показать/Скрыть результаты", expanded=True):
     #     # Стиль для графиков
     #     st.markdown("""
     #         <style>
