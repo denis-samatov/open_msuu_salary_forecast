@@ -64,7 +64,7 @@ def show_forecast_salary() -> None:
     }
 
     # Button to fetch vacancies based on user inputs
-    if st.sidebar.button("Получить вакансии"):
+    # if st.sidebar.button("Получить вакансии"):
         # Reset session state variables related to the vacancy processing
         # if 'df_vacancies' in st.session_state:
         #     del st.session_state['df_vacancies']
