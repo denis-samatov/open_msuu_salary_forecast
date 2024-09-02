@@ -192,34 +192,37 @@ def show_forecast_salary() -> None:
     # low_median = low_salary_stats_doc2vec.get('median', None)
     # high_median = high_salary_stats_doc2vec.get('median', None)
 
-    # st.header("Результаты")
-    # with st.expander("Показать/Скрыть результаты", expanded=True):
-    #     # Стиль для графиков
-    #     st.markdown("""
-    #         <style>
-    #         .plot-container {
-    #             display: flex;
-    #             flex-direction: row;
-    #             justify-content: space-between;
-    #         }
-    #         .plot-item {
-    #             flex: 1;
-    #             margin: 10px;
-    #         }
-    #         </style>
-    #     """, unsafe_allow_html=True)
+    st.header("Результаты")
+    with st.expander("Показать/Скрыть результаты", expanded=True):
+        # Стиль для графиков
+        st.markdown("""
+            <style>
+            .plot-container {
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+            }
+            .plot-item {
+                flex: 1;
+                margin: 10px;
+            }
+            </style>
+        """, unsafe_allow_html=True)
 
-    #     st.markdown('<div class="plot-container">', unsafe_allow_html=True)
+        st.markdown('<div class="plot-container">', unsafe_allow_html=True)
         
     #     # Объединенный график для низкой и высокой зарплаты
     #     if 'combined_salary_fig' not in st.session_state:
-    #         st.session_state.combined_salary_fig = go.Figure()
+            st.session_state.combined_salary_fig = go.Figure()
 
-    #     combined_salary_fig = st.session_state.combined_salary_fig
+        combined_salary_fig = st.session_state.combined_salary_fig
+        low _median = 100000
+        high_median = 150000
 
-    #     combined_salary_fig = plot_combined_salary(combined_salary_fig, low_median, high_median, user_salary)
+        user_salary = 120000
+        combined_salary_fig = plot_combined_salary(combined_salary_fig, low_median, high_median, user_salary)
     
-    #     st.plotly_chart(combined_salary_fig, use_container_width=True)
+        st.plotly_chart(combined_salary_fig, use_container_width=True)
 
     #     # Создание сводной таблицы
     #     salary_statisrics_table = create_salary_statistics(low_salary_stats_doc2vec, high_salary_stats_doc2vec) 
