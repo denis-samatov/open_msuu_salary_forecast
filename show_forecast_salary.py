@@ -216,7 +216,7 @@ def show_forecast_salary() -> None:
         st.session_state.combined_salary_fig = go.Figure()
 
         combined_salary_fig = st.session_state.combined_salary_fig
-        low _median = 100000
+        low_median = 100000
         high_median = 150000
 
         user_salary = 120000
