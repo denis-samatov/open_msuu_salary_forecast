@@ -213,7 +213,7 @@ def show_forecast_salary() -> None:
         
     #     # Объединенный график для низкой и высокой зарплаты
     #     if 'combined_salary_fig' not in st.session_state:
-            st.session_state.combined_salary_fig = go.Figure()
+        st.session_state.combined_salary_fig = go.Figure()
 
         combined_salary_fig = st.session_state.combined_salary_fig
         low _median = 100000
