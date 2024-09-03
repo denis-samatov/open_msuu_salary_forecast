@@ -61,9 +61,9 @@ def show_forecast_salary() -> None:
         "professional_roles": professional_roles_ids
     }
 
-    with st.spinner("Получение вакансий..."):
-        df_vacancies = fetch_and_process_vacancies(search_params, pages=pages)
-        st.session_state.df_vacancies = df_vacancies
+    # with st.spinner("Получение вакансий..."):
+    #     df_vacancies = fetch_and_process_vacancies(search_params, pages=pages)
+    #     st.session_state.df_vacancies = df_vacancies
 
     # with st.spinner("Обработка набора данных..."):
     #     df_vacancies_hh, doc2vec_model = create_dataset(st.session_state.df_vacancies)
@@ -111,50 +111,50 @@ def show_forecast_salary() -> None:
     # }
 
     # Form for user to input vacancy details
-    with st.expander("Показать/Скрыть форму вакансии", expanded=True):
-        with st.form(key='vacancy_form'):
-            st.text_input("Название должности", value=st.session_state.vacancy_details['vacancy_title'], key='vacancy_title', max_chars=100)
-            st.selectbox(
-                "Профессиональная роль",
-                list(professional_roles.keys()),
-                index=list(professional_roles.keys()).index(st.session_state.vacancy_details['vacancy_professional_role']) if st.session_state.vacancy_details['vacancy_professional_role'] else 0,
-                key='vacancy_professional_role'
-            )
-            st.text_area("Описание работы и навыки", value=st.session_state.vacancy_details['vacancy_description'], key='vacancy_description')
-            salary_input = st.text_input("Заработная плата", value=st.session_state.vacancy_details['vacancy_salary'], key='vacancy_salary', max_chars=20)
+    # with st.expander("Показать/Скрыть форму вакансии", expanded=True):
+    #     with st.form(key='vacancy_form'):
+    #         st.text_input("Название должности", value=st.session_state.vacancy_details['vacancy_title'], key='vacancy_title', max_chars=100)
+    #         st.selectbox(
+    #             "Профессиональная роль",
+    #             list(professional_roles.keys()),
+    #             index=list(professional_roles.keys()).index(st.session_state.vacancy_details['vacancy_professional_role']) if st.session_state.vacancy_details['vacancy_professional_role'] else 0,
+    #             key='vacancy_professional_role'
+    #         )
+    #         st.text_area("Описание работы и навыки", value=st.session_state.vacancy_details['vacancy_description'], key='vacancy_description')
+    #         salary_input = st.text_input("Заработная плата", value=st.session_state.vacancy_details['vacancy_salary'], key='vacancy_salary', max_chars=20)
 
-            # Check if the input is a valid integer
-            if validate_salary(salary_input):
-                st.session_state.vacancy_details['vacancy_salary'] = int(salary_input)
-            else:
-                st.error("Введите целое число в поле 'Заработная плата'.")
+    #         # Check if the input is a valid integer
+    #         if validate_salary(salary_input):
+    #             st.session_state.vacancy_details['vacancy_salary'] = int(salary_input)
+    #         else:
+    #             st.error("Введите целое число в поле 'Заработная плата'.")
             
-            st.text_input("Опыт работы", value=st.session_state.vacancy_details['vacancy_experience'], key='vacancy_experience', max_chars=20)
-            st.text_input("Тип занятости", value=st.session_state.vacancy_details['vacancy_employment'], key='vacancy_employment', max_chars=30)
-            st.text_input("График работы", value=st.session_state.vacancy_details['vacancy_schedule'], key='vacancy_schedule', max_chars=20)
+    #         st.text_input("Опыт работы", value=st.session_state.vacancy_details['vacancy_experience'], key='vacancy_experience', max_chars=20)
+    #         st.text_input("Тип занятости", value=st.session_state.vacancy_details['vacancy_employment'], key='vacancy_employment', max_chars=30)
+    #         st.text_input("График работы", value=st.session_state.vacancy_details['vacancy_schedule'], key='vacancy_schedule', max_chars=20)
 
-            submit_button: bool = st.form_submit_button('Векторизовать вакансию и спрогнозировать зарплату')
-            logging.info(f"Submit button state: {submit_button}")
+    #         submit_button: bool = st.form_submit_button('Векторизовать вакансию и спрогнозировать зарплату')
+    #         logging.info(f"Submit button state: {submit_button}")
 
-    # Process the submitted vacancy form
-    st.session_state.vacancy_details = {
-        'vacancy_title': st.session_state.vacancy_title,
-        'vacancy_professional_role': st.session_state.vacancy_professional_role,
-        'vacancy_description': st.session_state.vacancy_description,
-        'vacancy_salary': st.session_state.vacancy_salary,
-        'vacancy_experience': st.session_state.vacancy_experience,
-        'vacancy_employment': st.session_state.vacancy_employment,
-        'vacancy_schedule': st.session_state.vacancy_schedule
-    }
-    vacancy_details: str = f"""
-        Название вакансии: {st.session_state.vacancy_title}.
-        Профессиональная роль: {st.session_state.vacancy_professional_role}.
-        Описание вакансии и навыки: {st.session_state.vacancy_description}
-        Опыт работы: {st.session_state.vacancy_experience}.
-        Тип занятости: {st.session_state.vacancy_employment}.
-        График работы: {st.session_state.vacancy_schedule}.
-    """
-    logging.info(f"Vacancy details: {vacancy_details}")
+    # # Process the submitted vacancy form
+    # st.session_state.vacancy_details = {
+    #     'vacancy_title': st.session_state.vacancy_title,
+    #     'vacancy_professional_role': st.session_state.vacancy_professional_role,
+    #     'vacancy_description': st.session_state.vacancy_description,
+    #     'vacancy_salary': st.session_state.vacancy_salary,
+    #     'vacancy_experience': st.session_state.vacancy_experience,
+    #     'vacancy_employment': st.session_state.vacancy_employment,
+    #     'vacancy_schedule': st.session_state.vacancy_schedule
+    # }
+    # vacancy_details: str = f"""
+    #     Название вакансии: {st.session_state.vacancy_title}.
+    #     Профессиональная роль: {st.session_state.vacancy_professional_role}.
+    #     Описание вакансии и навыки: {st.session_state.vacancy_description}
+    #     Опыт работы: {st.session_state.vacancy_experience}.
+    #     Тип занятости: {st.session_state.vacancy_employment}.
+    #     График работы: {st.session_state.vacancy_schedule}.
+    # """
+    # logging.info(f"Vacancy details: {vacancy_details}")
 
     # # Vectorize the vacancy if the title and description are provided
     # with st.spinner("Векторизация вакансии..."):
