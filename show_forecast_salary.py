@@ -232,11 +232,11 @@ def show_forecast_salary() -> None:
     #     zip_buffer = create_zip_with_stats_and_plots(salary_statisrics_table, combined_salary_fig, other_figures)
 
     #     # Кнопка для скачивания ZIP-архива
-    #     st.download_button(
-    #         label="Скачать статистику и графики",
-    #         data=zip_buffer.getvalue(),
-    #         file_name="salary_data.zip",
-    #         mime="application/zip"
-    #     )
+        st.download_button(
+            label="Скачать статистику и графики",
+            data=combined_salary_fig,
+            file_name="salary_data.zip",
+            mime="application/zip"
+        )
 
     #     st.markdown('</div>', unsafe_allow_html=True)
