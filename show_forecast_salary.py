@@ -232,8 +232,14 @@ def show_forecast_salary() -> None:
     #     zip_buffer = create_zip_with_stats_and_plots(salary_statisrics_table, combined_salary_fig, other_figures)
 
     #     # Кнопка для скачивания ZIP-архива
+        # Assuming you have some data to download, e.g., a CSV file content or a ZIP archive
+        data_to_download = "This is the data to download"  # This could be the content of a file
+        
+        # Providing the data to the download button
         st.download_button(
-            label="Скачать статистику и графики"
+            label="Скачать статистику и графики",  # Button label
+            data=data_to_download,  # The data to download
+            file_name="statistics_and_graphics.zip"  # Optional: Default name for the downloaded file
         )
 
     #     st.markdown('</div>', unsafe_allow_html=True)
