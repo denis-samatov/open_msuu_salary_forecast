@@ -233,10 +233,7 @@ def show_forecast_salary() -> None:
 
     #     # Кнопка для скачивания ZIP-архива
         st.download_button(
-            label="Скачать статистику и графики",
-            data=combined_salary_fig,
-            file_name="salary_data.zip",
-            mime="application/zip"
+            label="Скачать статистику и графики"
         )
 
     #     st.markdown('</div>', unsafe_allow_html=True)
