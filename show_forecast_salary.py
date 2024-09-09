@@ -61,9 +61,9 @@ def show_forecast_salary() -> None:
         "professional_roles": professional_roles_ids
     }
 
-    with st.spinner("Получение вакансий..."):
-        df_vacancies = fetch_and_process_vacancies(search_params, pages=pages)
-        st.session_state.df_vacancies = df_vacancies
+    # with st.spinner("Получение вакансий..."):
+    #     df_vacancies = fetch_and_process_vacancies(search_params, pages=pages)
+    #     st.session_state.df_vacancies = df_vacancies
 
     # with st.spinner("Обработка набора данных..."):
     #     df_vacancies_hh, doc2vec_model = create_dataset(st.session_state.df_vacancies)
