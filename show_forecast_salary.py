@@ -52,18 +52,18 @@ def show_forecast_salary() -> None:
     selected_roles: List[str] = st.sidebar.multiselect("Профессиональные роли", list(professional_roles.keys()), placeholder="Выберите роль")
     professional_roles_ids: List[int] = [professional_roles[role] for role in selected_roles]
 
-    # search_params: Dict[str, List] = {
-    #     'area': area_ids,
-    #     'text': text,
-    #     'per_page': per_page,
-    #     'only_with_salary': only_with_salary,
-    #     "exchanges": exchanges,
-    #     "professional_roles": professional_roles_ids
-    # }
+    search_params: Dict[str, List] = {
+        'area': area_ids,
+        'text': text,
+        'per_page': per_page,
+        'only_with_salary': only_with_salary,
+        "exchanges": exchanges,
+        "professional_roles": professional_roles_ids
+    }
 
-    # with st.spinner("Получение вакансий..."):
-    #     df_vacancies = fetch_and_process_vacancies(search_params, pages=pages)
-    #     st.session_state.df_vacancies = df_vacancies
+    with st.spinner("Получение вакансий..."):
+        df_vacancies = fetch_and_process_vacancies(search_params, pages=pages)
+        st.session_state.df_vacancies = df_vacancies
 
     # with st.spinner("Обработка набора данных..."):
     #     df_vacancies_hh, doc2vec_model = create_dataset(st.session_state.df_vacancies)
