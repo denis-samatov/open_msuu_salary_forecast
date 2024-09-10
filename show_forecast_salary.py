@@ -60,10 +60,10 @@ def show_forecast_salary() -> None:
         "exchanges": exchanges,
         "professional_roles": professional_roles_ids
     }
-
-    with st.spinner("Получение вакансий..."):
-        df_vacancies = fetch_and_process_vacancies(search_params, pages=pages)
-        st.session_state.df_vacancies = df_vacancies
+    if st.sidebar.button("Получить вакансии"):
+        with st.spinner("Получение вакансий..."):
+            df_vacancies = fetch_and_process_vacancies(search_params, pages=pages)
+            st.session_state.df_vacancies = df_vacancies
 
     # with st.spinner("Обработка набора данных..."):
     #     df_vacancies_hh, doc2vec_model = create_dataset(st.session_state.df_vacancies)
@@ -75,26 +75,26 @@ def show_forecast_salary() -> None:
     #     st.session_state.cleaned_df = cleaned_df
 
     # Display data analysis
-    st.header("Анализ данных")
-    with st.expander("Показать/Скрыть анализ данных", expanded=True):
-        with st.container():
-            col1, col2 = st.columns(2)
-            with col1:
-                fig_salary_dist = plot_salary_distribution(st.session_state.df_vacancies)
-                st.plotly_chart(fig_salary_dist, use_container_width=True)
-
-                fig_key_skills = plot_key_skills(st.session_state.df_vacancies)
-                st.plotly_chart(fig_key_skills, use_container_width=True)
-
-                fig_key_skills_wordcloud = plot_key_skills_wordcloud(st.session_state.df_vacancies)
-                st.plotly_chart(fig_key_skills_wordcloud, use_container_width=True)
-
-            with col2:
-                fig_salary_boxplot = plot_salary_boxplots(st.session_state.df_vacancies)
-                st.plotly_chart(fig_salary_boxplot, use_container_width=True)
-
-                fig_prof_roles = plot_professional_roles(st.session_state.df_vacancies)
-                st.plotly_chart(fig_prof_roles, use_container_width=True)
+        st.header("Анализ данных")
+        with st.expander("Показать/Скрыть анализ данных", expanded=True):
+            with st.container():
+                col1, col2 = st.columns(2)
+                with col1:
+                    fig_salary_dist = plot_salary_distribution(st.session_state.df_vacancies)
+                    st.plotly_chart(fig_salary_dist, use_container_width=True)
+    
+                    fig_key_skills = plot_key_skills(st.session_state.df_vacancies)
+                    st.plotly_chart(fig_key_skills, use_container_width=True)
+    
+                    fig_key_skills_wordcloud = plot_key_skills_wordcloud(st.session_state.df_vacancies)
+                    st.plotly_chart(fig_key_skills_wordcloud, use_container_width=True)
+    
+                with col2:
+                    fig_salary_boxplot = plot_salary_boxplots(st.session_state.df_vacancies)
+                    st.plotly_chart(fig_salary_boxplot, use_container_width=True)
+    
+                    fig_prof_roles = plot_professional_roles(st.session_state.df_vacancies)
+                    st.plotly_chart(fig_prof_roles, use_container_width=True)
 
 
     # st.header("Добавить вашу вакансию")
